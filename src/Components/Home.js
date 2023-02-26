@@ -16,9 +16,6 @@ const Home = () => {
     radio: '',
     checkbox: false
   })
-  const [error, setError] = useState("");
-
-console.log(user);
 
   const handleInputChange = (event) => {
     const { name, value, type, checked,files } = event.target;
@@ -29,27 +26,33 @@ console.log(user);
     }));
   };
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const addError={}
+    const formData = new FormData();
 
-    if(!user.name){
-      addError.name="This field is required"
-    }
-    setError(addError)
+    console.log("123", user.image, user.name,user.email,user.number,user.password, user.select,user.radio,user.checkbox);
+    console.log(formData);
+    formData.append("profile", user.image);
+    formData.append("name", user.name);
+    formData.append("email", user.email);
+    formData.append("number", user.number);
+    formData.append("password", user.password);
+    formData.append("selectcountry", user.select);
+    formData.append("radio", user.radio);
+    formData.append("agree", user.checkbox);
 
-    if (Object.keys(addError).length === 0){
-      
 
-      try {
-        console.log(user);
-        await axios.post(`http://localhost:3004/users`, user)
-        
-        navigate('/list')
-      } catch (erroe) {
-        console.log("something is wrong");
-      }
-    }
+    axios.post('http://localhost:3004/users', formData)
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+   
+  
 
   };
 
@@ -73,7 +76,6 @@ console.log(user);
 
             <Grid xs={6}>
               <TextField id="name"  name="name" label="Name" variant="outlined" fullWidth value={user.name} onChange={handleInputChange} />
-               <span style={{ color: 'red' }}>{error.name}</span>
 
             </Grid>
 
